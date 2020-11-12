@@ -1,24 +1,26 @@
 import React, { Component } from 'react'
 import { View, Text } from '@tarojs/components'
+import { AtButton } from 'taro-ui'
 import './index.less'
 
 export default class Index extends Component {
 
-  componentWillMount () { }
+    componentWillMount () { }
 
-  componentDidMount () { }
+    componentDidMount () { }
 
-  componentWillUnmount () { }
+    componentWillUnmount () { }
 
-  componentDidShow () { }
+    componentDidShow () { }
 
-  componentDidHide () { }
+    componentDidHide () { }
 
-  render () {
-    return (
-      <View className='index'>
-        <Text>Hello world!</Text>
-      </View>
-    )
-  }
+    render () {
+        return (
+            <View className='index'>
+                <Text>Hello world!</Text>
+                <AtButton type='primary'>测试按钮</AtButton>
+            </View>
+        )
+    }
 }

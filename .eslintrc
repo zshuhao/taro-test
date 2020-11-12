@@ -1,3 +1,10 @@
 {
-  "extends": ["taro/react"]
+    "root": true,
+    "extends": [
+        "taro/react"
+    ],
+    "rules": {
+        "indent": [ "error", 4 ],
+        "import/no-commonjs": [0, { "allowPrimitiveModules": true }]
+    }
 }
