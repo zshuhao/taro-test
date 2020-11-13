@@ -43,6 +43,8 @@
     "eslint-config-standard": "^16.0.1",
     "react": "^16.10.0",
     "react-dom": "^16.10.0",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
     "taro-ui": "^3.0.0-alpha.3"
   },
   "devDependencies": {

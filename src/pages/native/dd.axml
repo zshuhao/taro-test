@@ -1,0 +1,3 @@
+<!-- <view>{{title}}</view>
+<view>{{array[0].user}}</view> -->
+<web-view src="https://cn.bing.com/"></web-view>
