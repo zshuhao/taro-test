@@ -13,7 +13,8 @@ export function login (code) {
         url: '/dingding/getAccessTokenByCode',
         method: 'get',
         data: {
-            code: code
+            code: code,
+            agentId: '971052009'
         }
     })
 }

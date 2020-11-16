@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View } from '@tarojs/components'
 import classNames from "classnames"
 import Taro from '@tarojs/taro'
+import { connect } from 'react-redux'
+import { saveFormData } from '../../store/user/action'
 import { login } from '../../api/user'
 
 import './index.less'
@@ -14,7 +16,9 @@ interface State {
     result: string;
     list: Iobject[];
 }
-
+@connect(({ user }) => ({
+    code: user.code
+}))
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
@@ -51,9 +55,17 @@ export default class Index extends Component<any, State> {
 
     fetchDdCode () {
         dd.getAuthCode({
-            success: res => {
+            success: async res => {
                 console.log(res)
-                // login(res.authCode)
+                this.props.dispatch(saveFormData(res))
+                // this.props.dispatch({ type: 'setCode', value: res })
+                Taro.showLoading()
+                await login(res.authCode)
+                Taro.hideLoading()
+                // Taro.showLoading()
+                // setTimeout(() => {
+                //     Taro.hideLoading()
+                // }, 2000)
             },
             fail: err => {}
         })
