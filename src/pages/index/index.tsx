@@ -1,28 +1,46 @@
 import React, { Component } from 'react'
-import { View, Text } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
-// import { test } from '../../api/user'
+import { View } from '@tarojs/components'
+import classNames from "classnames"
 import Taro from '@tarojs/taro'
+import { login } from '../../api/user'
 
 import './index.less'
 
+interface Iobject {
+    [key: string]: any;
+}
+
 interface State {
     result: string;
+    list: Iobject[];
 }
 
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
-            result: '111'
+            result: '111',
+            list: [
+                {
+                    id: 1,
+                    name: '二维码配置',
+                    icon: 'at-icon-camera',
+                    page: '/pages/qrSet/index'
+                },
+                {
+                    id: 2,
+                    name: '在线客服',
+                    icon: 'at-icon-message',
+                    page: '/pages/Hello/index'
+                }
+            ]
         }
     }
 
     componentWillMount () { }
 
     componentDidMount () {
-        console.log(Taro.getEnv())
-        // Taro.ENV_TYPE
+        this.fetchDdCode()
     }
 
     componentWillUnmount () { }
@@ -30,6 +48,16 @@ export default class Index extends Component<any, State> {
     componentDidShow () { }
 
     componentDidHide () { }
+
+    fetchDdCode () {
+        dd.getAuthCode({
+            success: res => {
+                console.log(res)
+                // login(res.authCode)
+            },
+            fail: err => {}
+        })
+    }
 
     async onTest () {
         // const a = await test({})
@@ -51,29 +79,34 @@ export default class Index extends Component<any, State> {
         // })
     }
 
-    onGoo () {
-        Taro.navigateTo({
-            url: '/pages/Hello/index'
-        })
-    }
-
-    onWeb () {
-        Taro.navigateTo({
-            url: '/pages/native/dd'
-        })
+    goPage (item) {
+        const { page } = item
+        Taro.navigateTo({ url: page })
     }
 
     render () {
-        const { result } = this.state
+        const { result, list } = this.state
+
         console.log(result)
 
         return (
             <View className='index'>
-                <Text>Hello world!</Text>
-                <Text>{ result }</Text>
-                <AtButton type='primary' onClick={this.onTest.bind(this)}>测试按钮</AtButton>
-                <AtButton type='primary' onClick={this.onGoo.bind(this)}>go</AtButton>
-                <AtButton type='primary' onClick={this.onWeb.bind(this)}>web view</AtButton>
+                {
+                    list.map(item => {
+                        const iconClass = classNames(
+                            'at-icon',
+                            item.icon
+                        )
+                        return ( 
+                            <View className='item' key={item.id} onClick={this.goPage.bind(this, item)}>
+                                <View className='text'>{item.name}</View>
+                                <View className='icon'>
+                                    <View className={iconClass}></View>
+                                </View>
+                            </View>
+                        )
+                    })
+                }
             </View>
         )
     }

@@ -1,5 +1,5 @@
 const config = {
-    api: 'http://47.100.160.41:7300/mock/5fa630cd982da800167de7fe'
+    api: 'http://auth-infc.test.9now.net'
 }
 
 export default config

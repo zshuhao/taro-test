@@ -1,0 +1,35 @@
+.index {
+    padding: 0 40px;
+    &::before {
+        content: "";  
+        display: table;
+    }
+    &::after {
+        content: "";  
+        display: table;
+    }
+    .item {
+        padding: 0 40px;
+        height: 150px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow:0px 0px 20px #ddd;
+        margin: 50px 0;
+        border-radius: 20px;
+        .text {
+            font-size: 28px;
+        }
+        .icon {
+            font-size: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            // border: 1px solid rgba(228, 174, 130, 0.767);
+            color:rgba(221, 103, 6, 0.767);
+            height: 60px;
+            width: 60px;
+            // border-radius: 50%;
+        }
+    }
+}

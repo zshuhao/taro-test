@@ -7,3 +7,13 @@ export function test (res) {
         data: res
     })
 }
+
+export function login (code) {
+    return request({
+        url: '/dingding/getAccessTokenByCode',
+        method: 'get',
+        data: {
+            code: code
+        }
+    })
+}
