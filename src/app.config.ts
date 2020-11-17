@@ -6,6 +6,7 @@ export default {
         'pages/qrSet/index',
         'pages/mfSet/index',
         'pages/search/index',
+        'pages/mfEdit/index',
         'pages/jkSet/index'
     ],
     window: {
