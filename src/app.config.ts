@@ -5,7 +5,8 @@ export default {
         'pages/native/dd',
         'pages/qrSet/index',
         'pages/mfSet/index',
-        'pages/search/index'
+        'pages/search/index',
+        'pages/jkSet/index'
     ],
     window: {
         backgroundTextStyle: 'light',
