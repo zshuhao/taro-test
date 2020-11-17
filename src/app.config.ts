@@ -3,7 +3,8 @@ export default {
         'pages/index/index',
         'pages/Hello/index',
         'pages/native/dd',
-        'pages/qrSet/index'
+        'pages/qrSet/index',
+        'pages/mfSet/index'
     ],
     window: {
         backgroundTextStyle: 'light',
