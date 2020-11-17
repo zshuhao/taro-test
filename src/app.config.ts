@@ -7,7 +7,8 @@ export default {
         'pages/mfSet/index',
         'pages/search/index',
         'pages/mfEdit/index',
-        'pages/jkSet/index'
+        'pages/jkSet/index',
+        'pages/mfMsg/index'
     ],
     window: {
         backgroundTextStyle: 'light',

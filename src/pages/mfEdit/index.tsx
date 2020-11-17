@@ -57,9 +57,6 @@ export default class Index extends Component<any, State> {
                             <AtListItem className='list-item' title='类型' extraText={value} />
                         </AtList>
                     </Picker>
-                    {/* <AtList className='list' hasBorder={false}>
-                        <AtListItem className='list-item' title='店铺' extraText='详细信息' />
-                    </AtList> */}
                     <View className='shop'>
                         <View className='label'>店铺</View>
                         <View className='content'>

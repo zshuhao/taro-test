@@ -30,6 +30,9 @@ export default class Index extends Component<any, State> {
     onSearchShop () {
         Taro.navigateTo({ url: '/pages/search/index' })
     }
+    onScanQr () {
+        Taro.navigateTo({ url: '/pages/mfMsg/index' })
+    }
 
     render () {
         const { result } = this.state
@@ -55,7 +58,7 @@ export default class Index extends Component<any, State> {
                 </View>
                 
 
-                <AtButton className='btn' type='primary'>[-] 扫描二维码</AtButton>
+                <AtButton className='btn' type='primary' onClick={this.onScanQr.bind(this)}>[-] 扫描二维码</AtButton>
             </View>
         )
     }
