@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
-// import { test } from '../../api/user'
-// import Taro from '@tarojs/taro'
+import Taro from '@tarojs/taro'
 
 import './index.less'
 
@@ -28,8 +27,8 @@ export default class Index extends Component<any, State> {
 
     componentDidHide () { }
 
-    async onTest () {
-
+    onSearchShop () {
+        Taro.navigateTo({ url: '/pages/search/index' })
     }
 
     render () {
@@ -47,7 +46,7 @@ export default class Index extends Component<any, State> {
                     <View className='at-row'>
                         <View className='label at-col at-col-1 at-col--auto'>配置店铺：</View>
                         <View className='at-col'>
-                            <View className='input'>
+                            <View className='input' onClick={this.onSearchShop.bind(this)}>
                                 店铺名称
                                 <View className='delete at-icon at-icon-close'></View>
                             </View>
