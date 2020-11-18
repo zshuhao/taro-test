@@ -1,6 +1,6 @@
-export const saveFormData = (value) => {
+export const setToken = (value) => {
     return {
-        type: 'setCode',
+        type: 'setToken',
         value
     }
 }

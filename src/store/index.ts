@@ -1,10 +1,11 @@
 import {createStore, combineReducers } from 'redux'
 import user from './user/reducer'
+import search from './search/reducer'
 // import thunk from 'redux-thunk'
 
 
 const store = createStore(
-    combineReducers({ user }),
+    combineReducers({ user, search }),
 //   applyMiddleware(thunk)
 )
 

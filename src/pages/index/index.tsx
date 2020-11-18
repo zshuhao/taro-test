@@ -3,7 +3,7 @@ import { View } from '@tarojs/components'
 import classNames from "classnames"
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
-import { saveFormData } from '../../store/user/action'
+import { setToken } from '../../store/user/action'
 import { login } from '../../api/user'
 
 import './index.less'
@@ -13,17 +13,15 @@ interface Iobject {
 }
 
 interface State {
-    result: string;
     list: Iobject[];
 }
 @connect(({ user }) => ({
-    code: user.code
+    tokenInfo: user.tokenInfo
 }))
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
-            result: '111',
             list: [
                 {
                     id: 1,
@@ -55,40 +53,37 @@ export default class Index extends Component<any, State> {
 
     fetchDdCode () {
         dd.getAuthCode({
-            success: async res => {
+            success: res => {
                 console.log(res)
-                this.props.dispatch(saveFormData(res))
-                // this.props.dispatch({ type: 'setCode', value: res })
                 Taro.showLoading()
-                await login(res.authCode)
-                Taro.hideLoading()
-                // Taro.showLoading()
-                // setTimeout(() => {
-                //     Taro.hideLoading()
-                // }, 2000)
+                this.getUser(res.authCode)
             },
-            fail: err => {}
-        })
-    }
-
-    async onTest () {
-        // const a = await test({})
-        // console.log(a)
-        Taro.scanCode({
-            success: (res) => {
-                console.log(res)
-                // console.log(this)
-                this.setState({
-                    result: JSON.stringify(res)
+            fail: () => {
+                Taro.showModal({
+                    title: '提示',
+                    content: '获取授权失败！',
+                    success: function (res) {
+                        if (res.confirm) {
+                            console.log('用户点击确定')
+                        } else if (res.cancel) {
+                            console.log('用户点击取消')
+                        }
+                    }
                 })
             }
         })
-        // dd.scan({
-        //     type: 'qr',
-        //     success: (res) => {
-        //         dd.alert({ title: res.code });
-        //     },
-        // })
+    }
+
+    async getUser (code) {
+        const tokenInfo = await login(code)
+        const { data } = tokenInfo
+        if (data.success) {
+            this.props.dispatch(setToken(data.data))
+        }
+        
+        Taro.hideLoading()
+        console.log(tokenInfo)
+        console.log(this.props)
     }
 
     goPage (item) {
@@ -97,9 +92,7 @@ export default class Index extends Component<any, State> {
     }
 
     render () {
-        const { result, list } = this.state
-
-        console.log(result)
+        const { list } = this.state
 
         return (
             <View className='index'>

@@ -1,12 +1,13 @@
-
 const defaultState = {
-    tokenInfo: {}
+    search: {}
 }
 
 export default function user (state = defaultState , action) {
     switch (action.type) {
-    case 'setToken':
-        return {...state, ...{ tokenInfo: action.value }}
+    case 'setSearch':
+        return { ...state, ...{ search: action.value } }
+    case 'clearSearch':
+        return { ...defaultState }
     default:
         return state;
     }

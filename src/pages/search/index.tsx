@@ -2,18 +2,28 @@ import React, { Component } from 'react'
 import { View } from '@tarojs/components'
 import { AtSearchBar, AtList, AtListItem } from 'taro-ui'
 import Taro from '@tarojs/taro'
-
+import { connect } from 'react-redux'
+import { getShopByInput } from '../../api/base'
+import { setSearch } from '../../store/search/action'
 import './index.less'
+
+interface ShopItem {
+    id: string;
+    name: string;
+}
 
 interface State {
     value: string;
+    list: ShopItem[];
 }
 
+@connect()
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
-            value: ''
+            value: '',
+            list: []
         }
     }
 
@@ -32,15 +42,35 @@ export default class Index extends Component<any, State> {
             value: e
         })
     }
-    onAction () {
-        console.log(this.state)
+    async onAction () {
+        const { value } = this.state
+        Taro.showLoading({
+            title: '加载中...',
+            mask: true
+        })
+        const res = await getShopByInput(value)
+        if (res.data.success && res.data.data) {
+            const list = (res.data.data.list || []).map(item => {
+                return { id: item.shopId, name: item.shopName }
+            })
+            this.setState({
+                list
+            })
+        } else {
+            this.setState({
+                list: []
+            })
+            Taro.showToast({ title: res.data.sysErrDesc || res.data.data.err.errMsg || '未知错误' })
+        }
+        Taro.hideLoading()
     }
-    onItemClick () {
-        console.log(1)
+    onItemClick (item) {
+        this.props.dispatch(setSearch(item))
+        Taro.navigateBack()
     }
 
     render () {
-        const { value } = this.state
+        const { value, list } = this.state
         /* eslint-disable react/jsx-indent-props */
         return (
             <View>
@@ -50,10 +80,11 @@ export default class Index extends Component<any, State> {
                     onActionClick={this.onAction.bind(this)}
                 />
                 <AtList hasBorder={false}>
-                    <AtListItem title='标题文字1' onClick={this.onItemClick.bind(this)} />
-                    <AtListItem title='标题文字2' />
-                    <AtListItem title='标题文字3' />
-                    <AtListItem title='禁用状态4' />
+                    {
+                        list.map(item => {
+                            return <AtListItem key={item.id} title={item.name} onClick={this.onItemClick.bind(this, item)} />
+                        })
+                    }
                 </AtList>
             </View>
         )

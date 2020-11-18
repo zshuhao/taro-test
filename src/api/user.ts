@@ -1,13 +1,5 @@
 import request from '../utils/request'
 
-export function test (res) {
-    return request({
-        url: '/eps/login',
-        method: 'post',
-        data: res
-    })
-}
-
 export function login (code) {
     return request({
         url: '/dingding/getAccessTokenByCode',
@@ -15,6 +7,7 @@ export function login (code) {
         data: {
             code: code,
             agentId: '971052009'
-        }
+        },
+        type: 'AUTH'
     })
 }
