@@ -25,3 +25,25 @@ export function updateJkQrCode (res) {
         type: 'ROOT'
     })
 }
+
+export function getMfQrInfo (res) {
+    return request({
+        url: '',
+        method: 'get',
+        data: {
+            ...res
+        },
+        type: 'QR'
+    })
+}
+
+export function updateMfQrCode (res) {
+    return request({
+        url: '',
+        method: 'get',
+        data: {
+            ...res
+        },
+        type: 'QR'
+    })
+}

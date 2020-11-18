@@ -11,3 +11,12 @@ export function login (code) {
         type: 'AUTH'
     })
 }
+
+export function getUserInfo () {
+    return request({
+        url: '/auth/user/getUserPermissions',
+        method: 'get',
+        data: {},
+        type: 'ROOT'
+    })
+}

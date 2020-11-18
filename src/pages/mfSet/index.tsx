@@ -2,18 +2,25 @@ import React, { Component } from 'react'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import Taro from '@tarojs/taro'
-
+import { connect } from 'react-redux'
+import { clearSearch } from '../../store/search/action'
+import { setMfQrInfo } from '../../store/qr/action'
+import { getMfQrInfo } from '../../api/qr'
 import './index.less'
 
 interface State {
     result: string;
+    qrCode: string;
 }
-
+@connect(({ search }) => ({
+    shopInfo: search.search
+}))
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
-            result: '111'
+            result: '',
+            qrCode: ''
         }
     }
 
@@ -21,7 +28,9 @@ export default class Index extends Component<any, State> {
 
     componentDidMount () { }
 
-    componentWillUnmount () { }
+    componentWillUnmount () {
+        this.onDeleteSearchInfo()
+    }
 
     componentDidShow () { }
 
@@ -31,11 +40,53 @@ export default class Index extends Component<any, State> {
         Taro.navigateTo({ url: '/pages/search/index' })
     }
     onScanQr () {
-        Taro.navigateTo({ url: '/pages/mfMsg/index' })
+        const { shopInfo } = this.props
+        if (shopInfo.id === '' || shopInfo.id === undefined) {
+            Taro.showModal({
+                title: '提示',
+                content: '配置店铺不能为空！',
+                success: function () {}
+            })
+            return
+        }
+        Taro.scanCode({
+            success: (res) => {
+                const result = res.result.split('/')
+                const code = result[result.length - 1]
+                this.setState({
+                    qrCode: code
+                })
+                this.fetchQrInfo()
+            },
+            fail: () => {}
+        })
+    }
+
+    async fetchQrInfo () {
+        Taro.showLoading()
+        const { qrCode } = this.state
+        const params = {
+            method: 'qr.code.codeInfo',
+            code: qrCode
+        }
+        const res = await getMfQrInfo(params)
+        if (res.data.status === 0) {
+            const info = res.data.data
+            this.props.dispatch(setMfQrInfo(info))
+            Taro.navigateTo({ url: '/pages/mfMsg/index' })
+        } else {
+            Taro.showToast({ title: res.data.msg || '未知错误' })
+        }
+        Taro.hideLoading()
+    }
+
+    onDeleteSearchInfo () {
+        this.props.dispatch(clearSearch())
     }
 
     render () {
         const { result } = this.state
+        const { shopInfo } = this.props
         console.log(result)
 
         return (
@@ -48,11 +99,15 @@ export default class Index extends Component<any, State> {
                     <View>第四步：绑定完成</View>
                     <View className='at-row'>
                         <View className='label at-col at-col-1 at-col--auto'>配置店铺：</View>
-                        <View className='at-col'>
+                        <View className='content at-col'>
                             <View className='input' onClick={this.onSearchShop.bind(this)}>
-                                店铺名称
-                                <View className='delete at-icon at-icon-close'></View>
+                                { shopInfo.name || '店铺名称' }
                             </View>
+                            {
+                                shopInfo.id && <View className='delete' onClick={this.onDeleteSearchInfo.bind(this)}>
+                                    <View className='at-icon at-icon-close'></View>
+                                </View>
+                            }
                         </View>
                     </View>
                 </View>

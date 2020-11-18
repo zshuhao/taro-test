@@ -3,8 +3,8 @@ import { View } from '@tarojs/components'
 import classNames from "classnames"
 import Taro from '@tarojs/taro'
 import { connect } from 'react-redux'
-import { setToken } from '../../store/user/action'
-import { login } from '../../api/user'
+import { setToken, setUserInfo } from '../../store/user/action'
+import { login, getUserInfo } from '../../api/user'
 
 import './index.less'
 
@@ -54,7 +54,7 @@ export default class Index extends Component<any, State> {
     fetchDdCode () {
         dd.getAuthCode({
             success: res => {
-                console.log(res)
+                // console.log(res)
                 Taro.showLoading()
                 this.getUser(res.authCode)
             },
@@ -79,11 +79,17 @@ export default class Index extends Component<any, State> {
         const { data } = tokenInfo
         if (data.success) {
             this.props.dispatch(setToken(data.data))
+            const user = await getUserInfo()
+            if (user.data.success) {
+                this.props.dispatch(setUserInfo(user.data.data))
+            } else {
+                Taro.showToast({ title: '获取用户信息失败' })
+            }
+        } else {
+            Taro.showToast({ title: '获取用户Token失败' })
         }
         
         Taro.hideLoading()
-        console.log(tokenInfo)
-        console.log(this.props)
     }
 
     goPage (item) {

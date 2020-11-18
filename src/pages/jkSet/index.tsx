@@ -70,7 +70,7 @@ export default class Index extends Component<any, State> {
         Taro.navigateTo({ url: '/pages/search/index' })
     }
 
-    onDeleteSearchInfo (e) {
+    onDeleteSearchInfo () {
         this.props.dispatch(clearSearch())
     }
 

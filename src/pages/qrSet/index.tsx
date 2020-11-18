@@ -2,18 +2,22 @@ import React, { Component } from 'react'
 import { View } from '@tarojs/components'
 import { AtButton } from 'taro-ui'
 import Taro from '@tarojs/taro'
-
+import { connect } from 'react-redux'
+import { getMfQrInfo } from '../../api/qr'
+import { getShopById } from '../../api/base'
+import { setMfQrInfo } from '../../store/qr/action'
+import { setSearch } from '../../store/search/action'
 import './index.less'
 
 interface State {
-    result: string;
+    qrCode: string;
 }
-
+@connect()
 export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
-            result: '111'
+            qrCode: ''
         }
     }
 
@@ -34,13 +38,49 @@ export default class Index extends Component<any, State> {
         Taro.navigateTo({ url: '/pages/jkSet/index' })
     }
     onMfEdit () {
-        Taro.navigateTo({ url: '/pages/mfEdit/index' })
+        Taro.scanCode({
+            success: (res) => {
+                const result = res.result.split('/')
+                const code = result[result.length - 1]
+                this.setState({
+                    qrCode: code
+                })
+                this.fetchQrInfo()
+            },
+            fail: () => {}
+        })
+    }
+
+    async fetchQrInfo () {
+        Taro.showLoading()
+        const { qrCode } = this.state
+        const params = {
+            method: 'qr.code.codeInfo',
+            code: qrCode
+        }
+        const res = await getMfQrInfo(params)
+        if (res.data.status === 0) {
+            const shop = await getShopById(res.data.data.shop_id)
+            if (shop.data.success) {
+                const info = res.data.data
+                info.shopName = shop.data.data.detail.customerName
+                this.props.dispatch(setMfQrInfo(info))
+                const search = {
+                    id: info.shop_id,
+                    name: info.shopName
+                }
+                this.props.dispatch(setSearch(search))
+                Taro.navigateTo({ url: '/pages/mfEdit/index' })
+            } else {
+                Taro.showToast({ title: shop.data.sysErrDesc || shop.data.data.err.errMsg || '未知错误' })
+            }
+        } else {
+            Taro.showToast({ title: res.data.msg || '未知错误' })
+        }
+        Taro.hideLoading()
     }
 
     render () {
-        const { result } = this.state
-        console.log(result)
-
         return (
             <View className='index'>
                 <View className='title'>秒付配置</View>

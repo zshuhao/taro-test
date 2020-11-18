@@ -11,3 +11,14 @@ export function getShopByInput (res) {
         type: 'ROOT'
     })
 }
+
+export function getShopById (res) {
+    return request({
+        url: '/crm/shops/detail',
+        method: 'post',
+        data: JSON.stringify({
+            shopId: res
+        }),
+        type: 'ROOT'
+    })
+}

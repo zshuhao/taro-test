@@ -4,3 +4,10 @@ export const setToken = (value) => {
         value
     }
 }
+
+export const setUserInfo = (value) => {
+    return {
+        type: 'setUserInfo',
+        value
+    }
+}
