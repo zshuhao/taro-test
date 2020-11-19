@@ -6,7 +6,7 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import { getJkQrCodeInfo, updateJkQrCode } from '../../api/qr'
 import { clearSearch } from '../../store/search/action'
-
+import appConfig from '../../config/index'
 import './index.less'
 
 interface State {
@@ -147,12 +147,16 @@ export default class Index extends Component<any, State> {
         })
         const { qrCodeInfo, pickerIndex } = this.state
         const { shopInfo } = this.props
+        const msg = this.generateMsg()
         const params = {
             id: qrCodeInfo.id,
             branchShopId: shopInfo.id,
-            // branchShopId: '111578',
             serviceQrType: TypeArr[pickerIndex].statusValue,
-            appId: qrCodeInfo.appId
+            appId: qrCodeInfo.appId,
+            shopId: shopInfo.brandId,
+            content: {
+                msg: msg
+            }
         }
         const res = await updateJkQrCode(params)
         Taro.hideLoading()
@@ -160,10 +164,21 @@ export default class Index extends Component<any, State> {
             Taro.showToast({ title: '修改成功' })
             setTimeout(() => {
                 Taro.navigateBack({ delta: 1 })
-            }, 200)
+            }, 1500)
         } else {
             Taro.showToast({ title: res.data.msg || '未知错误' })
         }
+    }
+
+    generateMsg () {
+        const { qrCodeInfo, pickerIndex } = this.state
+        const { shopInfo } = this.props
+        const shopName = shopInfo.name
+        const shopId = shopInfo.id
+        const needmobile = TypeArr[pickerIndex].statusValue === 5 ? 1 : 0
+        const appId = qrCodeInfo.appId
+        const url = appConfig.JK_NEED_URL
+        return `欢迎光临${shopName} 请问您几人就餐？点击数字取号 <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=1&appId=${appId}'>1人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=2&appId=${appId}'>2人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=3&appId=${appId}'>3人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=4&appId=${appId}'>4人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=5&appId=${appId}'>5人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=6&appId=${appId}'>6人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=7&appId=${appId}'>7人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=8&appId=${appId}'>8人</a> <a href='${url}?needmobile=${needmobile}&shopid=${shopId}&people=9&appId=${appId}'>9人及以上</a>`
     }
 
     render () {

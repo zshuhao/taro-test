@@ -42,6 +42,11 @@ export default class Index extends Component<any, State> {
             value: e
         })
     }
+    onClearInput () {
+        this.setState({
+            list: []
+        })
+    }
     async onAction () {
         const { value } = this.state
         Taro.showLoading({
@@ -51,7 +56,7 @@ export default class Index extends Component<any, State> {
         const res = await getShopByInput(value)
         if (res.data.success && res.data.data) {
             const list = (res.data.data.list || []).map(item => {
-                return { id: item.shopId, name: item.shopName }
+                return { id: item.shopId, name: item.shopName, brandId: item.brandId }
             })
             this.setState({
                 list
@@ -78,6 +83,7 @@ export default class Index extends Component<any, State> {
                     value={value}
                     onChange={this.onChange.bind(this)}
                     onActionClick={this.onAction.bind(this)}
+                    onClear={this.onClearInput.bind(this)}
                 />
                 <AtList hasBorder={false}>
                     {

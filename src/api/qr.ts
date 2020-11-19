@@ -3,7 +3,7 @@ import request from '../utils/request'
 export function getJkQrCodeInfo (code) {
     return request({
         url: '/platManager/platManager/getReservedQrByQrCode',
-        method: 'post',
+        method: 'POST',
         data: JSON.stringify({
             data: {
                 qrCode: code
@@ -16,7 +16,7 @@ export function getJkQrCodeInfo (code) {
 export function updateJkQrCode (res) {
     return request({
         url: '/platManager/platManager/updateReservedQr',
-        method: 'post',
+        method: 'POST',
         data: JSON.stringify({
             data: {
                 ...res
@@ -29,7 +29,7 @@ export function updateJkQrCode (res) {
 export function getMfQrInfo (res) {
     return request({
         url: '',
-        method: 'get',
+        method: 'GET',
         data: {
             ...res
         },
@@ -40,7 +40,7 @@ export function getMfQrInfo (res) {
 export function updateMfQrCode (res) {
     return request({
         url: '',
-        method: 'get',
+        method: 'GET',
         data: {
             ...res
         },

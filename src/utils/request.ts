@@ -1,9 +1,7 @@
-import Taro from '@tarojs/taro'
+// import Taro from '@tarojs/taro'
 import crypto from 'crypto'
 import appConfig from '../config/index'
 import store from '../store/index'
-
-// const crypto = require('crypto')
 
 function service (options) {
     switch (options.type) {
@@ -24,15 +22,21 @@ function service (options) {
         break;
     default:
         const { 'user': {  tokenInfo  }} = store.getState()
-        options.header = {
+        options.headers = {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${tokenInfo.access_token}`
         }
+        // options.headers = {
+        //     'Content-Type': 'application/json',
+        //     Authorization: `Bearer 8e0c6e11-9a52-4bcd-9821-b25280b244fb`
+        // }
         options.url = appConfig.API_ROOT + options.url
+        delete options.type
         break;
     }
-    // console.log(options)
-    return Taro.request(options)
+    console.log(options)
+    // return Taro.request(options)
+    return dd.httpRequest(options)
 }
 function md5 (str) {
     return crypto.createHash('md5').update(str).digest('hex')

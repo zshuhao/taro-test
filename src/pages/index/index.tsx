@@ -13,6 +13,7 @@ interface Iobject {
 }
 
 interface State {
+    authCode: string;
     list: Iobject[];
 }
 @connect(({ user }) => ({
@@ -22,6 +23,7 @@ export default class Index extends Component<any, State> {
     constructor (props) {
         super(props)
         this.state = {
+            authCode: '',
             list: [
                 {
                     id: 1,
@@ -31,10 +33,18 @@ export default class Index extends Component<any, State> {
                 },
                 {
                     id: 2,
+                    name: '拓客宝',
+                    icon: 'at-icon-streaming',
+                    page: '/pages/webView/index?page=tk'
+                    // page: '/pages/native/dd'
+                },
+                {
+                    id: 3,
                     name: '在线客服',
                     icon: 'at-icon-message',
-                    page: '/pages/Hello/index'
+                    page: '/pages/webView/index?page=kf'
                 }
+
             ]
         }
     }
@@ -43,6 +53,7 @@ export default class Index extends Component<any, State> {
 
     componentDidMount () {
         this.fetchDdCode()
+        this.checkUpdate()
     }
 
     componentWillUnmount () { }
@@ -51,11 +62,41 @@ export default class Index extends Component<any, State> {
 
     componentDidHide () { }
 
+    checkUpdate () {
+        const updateManager = dd.getUpdateManager()
+
+        updateManager.onCheckForUpdate(function (res) {
+            // 请求完新版本信息的回调
+            console.log('版本信息', res)
+        })
+
+        updateManager.onUpdateReady(function (ret) {
+            console.log(ret.version) // 更新版本号
+            Taro.showModal({
+                title: '更新提示',
+                content: '新版本已经准备好，是否重启应用？',
+                success: function (res) {
+                    if (res.confirm) {
+                        updateManager.applyUpdate()
+                    }
+                }
+            })
+        })
+
+        updateManager.onUpdateFailed(function (err) {
+            // 新版本下载失败
+            console.log(err)
+        })
+    }
+
     fetchDdCode () {
         dd.getAuthCode({
             success: res => {
                 // console.log(res)
                 Taro.showLoading()
+                this.setState({
+                    authCode: res.authCode
+                })
                 this.getUser(res.authCode)
             },
             fail: () => {
@@ -75,6 +116,7 @@ export default class Index extends Component<any, State> {
     }
 
     async getUser (code) {
+        console.log('code', code)
         const tokenInfo = await login(code)
         const { data } = tokenInfo
         if (data.success) {
@@ -93,8 +135,14 @@ export default class Index extends Component<any, State> {
     }
 
     goPage (item) {
-        const { page } = item
-        Taro.navigateTo({ url: page })
+        const { page, id } = item
+        const { authCode } = this.state
+        let url = page
+        if (id === 2) {
+            url = page + `&code=${authCode}`
+        }
+
+        Taro.navigateTo({ url })
     }
 
     render () {

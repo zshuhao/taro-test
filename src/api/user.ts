@@ -3,7 +3,7 @@ import request from '../utils/request'
 export function login (code) {
     return request({
         url: '/dingding/getAccessTokenByCode',
-        method: 'get',
+        method: 'GET',
         data: {
             code: code,
             agentId: '971052009'
@@ -15,7 +15,7 @@ export function login (code) {
 export function getUserInfo () {
     return request({
         url: '/auth/user/getUserPermissions',
-        method: 'get',
+        method: 'GET',
         data: {},
         type: 'ROOT'
     })
